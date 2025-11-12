@@ -1,6 +1,6 @@
-# Serra Rocketry Load Cell Tester
+# Serra Rocketry Static Test Stand
 
-This repository contains the code and documentation for the Serra Rocketry team's load cell tester, used to measure the thrust of rocket motors. The tester is written in C++ for an ESP32 or ESP8266 microcontroller(arduino compatible boards) .
+This repository contains the code and documentation for the Serra Rocketry team's static test stand, used to measure the thrust of rocket motors. The tester is written in C++ for an ESP32 or ESP8266 microcontroller(arduino compatible boards) .
 
 ## Bill of Material (BOM)
 

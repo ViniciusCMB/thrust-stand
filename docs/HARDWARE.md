@@ -92,7 +92,7 @@ Vout_max = 4.5V * (3300 / (2200 + 3300)) = 2.7V (dentro da faixa 3.3V do ESP32)
 
 Montagem Completa
 
-![Esquematico](./docs/Equematico.png)
+![Esquematico](./Equematico.png)
 
 ## ⚠️ Considerações de Projeto
 

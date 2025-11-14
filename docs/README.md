@@ -11,13 +11,13 @@ Esta documentação está organizada para fornecer todas as informações necess
 - Primeira execução e verificação
 - Solução de problemas de instalação
 
-### 2. Documentação de [hardware](hardware.md)
+### 2. Documentação de [Hardware](./HARDWARE.md)
 
 - Lista completa de componentes (BOM)
 - Esquemáticos e diagramas de conexão
 - Especificações técnicas dos sensores
 
-### 3. Documentação de [Firmware](firmware.md)
+### 3. Documentação de [Firmware](./FIRMWARE.md)
 
 - Arquitetura do sistema e fluxo de dados
 - Configuração e calibração

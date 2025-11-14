@@ -92,15 +92,15 @@ Vout_max = 4.5V * (3300 / (2200 + 3300)) = 2.7V (dentro da faixa 3.3V do ESP32)
 
 Montagem Completa
 
-![Esquematico](https://./docs/Equematico.jpg)
+![Esquematico](https://./docs/Equematico.png)
 
 ## ⚠️ Considerações de Projeto
 
 - [x] Divisor resistivo para sensor de pressão
 - [x] Capacitores de desacoplamento em cada IC
 - [x] Fixação da célula de carga deve ser rígida
-- [] Isolamento contra vibrações
-- [] Proteção contra ambiente (poeira, umidade)
+- [ ] Isolamento contra vibrações
+- [ ] Proteção contra ambiente (poeira, umidade)
 
 ## 🧪 Testes de Hardware
 

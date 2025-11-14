@@ -37,7 +37,6 @@ git clone https://github.com/ViniciusCMB/thrust-stand.git
 
 ## 📖 Documentação
 
-- [Guia de Instalação Detalhado](./docs/INSTALACAO.md)
 - [Esquemático e Montagem](./docs/HARDWARE.md)
 - [Firmware e Arquitetura](./docs/FIRMWARE.md)
 - [Protocolos e API](./docs/API.md)

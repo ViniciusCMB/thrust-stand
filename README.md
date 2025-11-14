@@ -1,53 +1,67 @@
-# Serra Rocketry Static Test Stand
+# thrust-stand
 
-This repository contains the code and documentation for the Serra Rocketry team's static test stand, used to measure the thrust of rocket motors. The tester is written in C++ for an ESP32 or ESP8266 microcontroller(arduino compatible boards) .
+![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
+![Versão](https://img.shields.io/badge/versão-1.0.0-blue)
 
-## Bill of Material (BOM)
+## 📋 Sobre
 
-* ESP32 or ESP8266
-    to read sensor data and send to the server, since it is cheap and will be near the motor combustion.
-* Raspberry Pi or similar 
-    To be a server to get and display the data in real time
-* Load Cell
-    Depending on the motor force, tipicaly, the precision is about 10%-15% of the max load cell capacity.
-* V-slots
-    To build a box to hold the load cel, the motor and other sensors.
+Sistema embarcado baseado em ESP32 para controle e monitoramento de testes estáticos de motores de foguetes, com aquisição de dados de empuxo e pressão em tempo real, armazenamento em cartão SD e comunicação multi-protocolo.
 
-## Installation and Setup
+## 🚀 Quick Start
 
-To use the load cell tester, follow these steps:
+1. Clone o repositório
 
-1. Clone the repository.
-2. Connect the load cell and other sensor to the ESP.
-3. Connect the ESP to your computer.
-4. Open the `code/LoadCellTester/LoadCellTester.ino` sketch in the Arduino IDE.
-5. Upload the sketch to the Arduino.
-6. Open the serial monitor to view the output from the tester.
+```bash
+git clone https://github.com/ViniciusCMB/thrust-stand.git
+```
 
-## InfluxDB Setup
+2. Configure o hardware conforme [esquemático](./docs/HARDWARE.md)
+3. Carregue o firmware
 
-To store the data from the load cell tester, you'll need to set up an InfluxDB server. Ideally, you should use a Raspberry Pi or similar device as your server. Follow the instructions in the [Getting Started with Arduino and InfluxDB](https://www.influxdata.com/blog/getting-started-arduino-influxdb/) blog post to set up InfluxDB on your server.
+## 📁 Estrutura do Projeto
 
-It's important to ensure that the date and time are correct on the InfluxDB server in order for the data to be stored correctly. To do this, you should set up an NTP server on the InfluxDB server to synchronize the clock. This will ensure that the data is stored with the correct timestamp.
+```
+├── 📂 docs/              # Documentação técnica detalhada
+├── 📂 extras/            # Códigos extras utilizados
+├── 📂 firmware/          # Código do microcontrolador ESP32
+├── 📂 hardware/          # Esquemáticos, PCBs e lista de componentes
+├── 📂 software/          # Ferramentas de análise e interface
+└── 📂 test/              # Testes unitários e de integração
+```
 
-## Usage
+## 🔧 Pré-requisitos
 
-Here's how to use the load cell tester:
+- Hardware: ESP32, Célula de carga, Conversor HX711, Sensor de pressão, RTC DS3231, Leitor Micro SD Card.
+- Software: Arduino IDE 2.0+
+- Bibliotecas: Ver requirements.txt
 
-1. Place the rocket motor on the load cell.
-2. Apply power to the motor.
-3. The tester will output the thrust of the motor in Newtons to the serial monitor.
-4. The data will also be stored in your InfluxDB server.
+## 📖 Documentação
 
+- [Guia de Instalação Detalhado](./docs/INSTALACAO.md)
+- [Esquemático e Montagem](./docs/HARDWARE.md)
+- [Firmware e Arquitetura](./docs/FIRMWARE.md)
+- [Protocolos e API](./docs/API.md)
+- [Troubleshooting](./docs/TROUBLESHOOTING.md)
 
-## Contributing
+## 🎯 Funcionalidades
 
-We welcome contributions from the community! To contribute, follow these steps:
+- ✅ Aquisição de dados de empuxo e pressão em tempo real
+- ✅ Armazenamento em cartão SD com timestamp
+- ✅ Comunicação multi-protocolo (Serial, Bluetooth, ESP-NOW)
+- ✅ Calibração persistente de sensores
+- ✅ Feedback visual e audível
 
-1. Fork the repository.
-2. Make your changes.
-3. Create a pull request.
+## 🤝 Contribuindo
 
+Este projeto segue as [Boas Práticas da Serra Rocketry](https://github.com/Serra-Rocketry/best-practices). Para contribuir:
 
-## References
-* https://www.influxdata.com/blog/getting-started-arduino-influxdb/
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## ✨ Autores
+
+- Equipe Serra Rocketry - Desenvolvimento e documentação
+- Contribuidores - [Lista de contribuidores]()

@@ -24,6 +24,10 @@
 #define CELULA_SCK_PIN 27 // Pino de clock da célula de carga
 #define PRESSURE_PIN 35   // Pino do sensor de pressão
 #define INTERVALO 100     // Precisão Leitura Dados milissegundos
+#define LCD_ROW 4
+#define LCD_COL 20
+
+
 
 // Variáveis globais
 const float VinPressure = 5.0;    // Tensão que alimenta o sensor
@@ -42,6 +46,15 @@ String dir = "";                  // Diretório
 String filedir = "";              // Arquivo
 String leitura = "";              // Leitura dos dados
 bool espNowPeerReady = false;     // Estado do par ESP-NOW
+
+
+// definindo lcd
+LiquidCrystal_I2C LCD = LiquidCrystal_I2C(0x27, 16, 4);
+
+// Simbolos Customizados
+byte bitmapCelsius[8] = {0b11000,0b11000,0b00000,0b00110,0b01001,0b01000,0b01001,0b00110};
+byte bitmapSeta1[8] = {0b00000,0b00000,0b00000,0b01111,0b01111,0b00000,0b00000,0b00000};
+byte bitmapSeta2[8] = {0b10000,0b11000,0b11100,0b11110,0b11110,0b11100,0b11000,0b10000};
 
 // Configuração esp-now
 uint8_t enderecoReceptor[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}; // Endereço MAC do receptor
@@ -76,6 +89,20 @@ void setup()
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(BTN_PIN, INPUT);
+  
+  // inicializar LCD
+  LCD.init();
+  LCD.backlight();
+  LCD.setCursor(0, 0);
+  LCD.clear(): 
+
+  LCD.createChar(0, bitmapCelsius);
+  LCD.createChar(1, bitmapSeta1);
+  LCD.createChar(2, bitmapSeta2);
+
+
+  // setup tela de informacoes
+
 
   // setupESPNow();
 
@@ -144,6 +171,19 @@ void loop()
       }
     }
   }
+}
+
+// tela de informacoes que vao aparecer no lcd
+void setupInfoScreen() {
+  LCD.clear();
+  LCD.setCursor(0, 0);
+  LCD.print("Atual:");
+  LCD.setCursor(0, 1); // Linha 1, coluna 0
+  LCD.print("Maior:");
+  LCD.setCursor(0 , 2);
+  LCD.print("Pressao Atual:");
+  LCD.setCursor(0, 3);
+  LCD.print("Pressao Maior: ");
 }
 
 // Configuração do fator de carga
@@ -315,10 +355,33 @@ void logData(unsigned long millis)
 {
   float peso = escala.get_units();
   float pressao = pressureSensor.readADC();
+  // printa os valores de peso e pressão no LCD (ajuste posições para 16x4)
+  // Atual (linha 0) e Maior (linha 1) para peso
+  LCD.setCursor(12, 0);
+  LCD.print("      ");               // limpa espaço
+  LCD.setCursor(12, 0);
+  LCD.print(String(peso, 2));       // peso com 2 casas
+
+  LCD.setCursor(12, 1);
+  LCD.print("      ");
+  LCD.setCursor(12, 1);
+  LCD.print(String(maxValues[0], 2)); // maior peso atual
+
+  // Pressão Atual (linha 2) e Pressão Maior (linha 3)
+  LCD.setCursor(13, 2);
+  LCD.print("   ");
+  LCD.setCursor(13, 2);
+  LCD.print(String(pressao, 2));
+
+  LCD.setCursor(13, 3);
+  LCD.print("   ");
+  LCD.setCursor(13, 3);
+  LCD.print(String(maxValues[1], 2));
 
   if (peso > maxValues[0])
   {
     maxValues[0] = peso;
+
   }
 
   if (pressao > maxValues[1])
@@ -327,6 +390,7 @@ void logData(unsigned long millis)
   }
 
   leitura = String(millis) + "," + String(peso, 6) + "," + String(pressao);
+
   printToSerials(leitura);
   appendFile(SD, filedir, leitura);
 }

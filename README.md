@@ -49,6 +49,7 @@ git clone https://github.com/ViniciusCMB/thrust-stand.git
 - ✅ Comunicação multi-protocolo (Serial, Bluetooth, ESP-NOW)
 - ✅ Calibração persistente de sensores
 - ✅ Feedback visual e audível
+- ✅ Tela LCD para exibição de valores atuais e máximos 
 
 ## 🤝 Contribuindo
 

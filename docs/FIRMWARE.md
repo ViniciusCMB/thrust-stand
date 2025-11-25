@@ -15,6 +15,7 @@ O firmware implementa um sistema de aquisição de dados em tempo real para test
 │  Célula Carga   │───▶│   Aquisição      │───▶│  Cartão SD       │
 │  Sensor Pressão │    │   Filtragem      │    │  Serial/BT       │
 │  RTC DS3231     │    │   Timestamp      │    │  ESP-NOW         │
+│                 │    │                  │    │  LCD             │
 └─────────────────┘    └──────────────────┘    └──────────────────┘
          │                        │                        │
          └────────────────────────┼────────────────────────┘
@@ -51,6 +52,7 @@ firmware/
 - esp_now
 - WiFi
 - Preferences
+- LiquidCrystal_I2C
 
 ## 🔧 Configuração e Calibração
 
@@ -140,10 +142,10 @@ void logData(unsigned long millis) {
     leitura = String(millis) + "," + String(peso, 6) + "," + String(pressao);
     appendFile(SD, filedir, leitura);
 
-    // Transmissão (opcional)
+    // Transmissão (não implementado)
     if (espNowPeerReady) {
         transmitDataESPNow(leitura);
-    }
+    } 
 }
 ```
 
@@ -216,7 +218,7 @@ void appendFile(fs::FS &fs, const String &path, const String &message) {
 
 ## 📡 Comunicação
 
-### Protocolo ESP-NOW
+### Protocolo ESP-NOW (não implementado)
 
 ```cpp
 typedef struct struct_message {

@@ -19,6 +19,7 @@ Sistema embarcado baseado em ESP32 para aquisição de dados de empuxo e pressã
 | Botão Táctil      | 1          | 6x6mm, 4 pinos           |
 | Resistores        | 2          | 2.2kΩ e 3.3kΩ            |
 | Fonte Alimentação | 1          | 5V 2A, USB-C             |
+| LCD 20x4 I2C      | 1          | Tela LCD com módulo I2C  |
 
 ## 🔄 Diagrama de Conexões
 
@@ -45,12 +46,14 @@ Esquemático Simplificado
 | GND ------------ GND
 +-------------------+
 
-+-------------------+
-|     Botão         |
-|                   |
-| Pino1 --------- GPIO32
-| Pino2 --------- GND
-+-------------------+
++-------------------+      +-------------------+
+|     Botão         |      |    LCD I2C        |
+|                   |      |                   |
+| Pino1 --------- GPIO32   | SDA --------- GPIO21
+| Pino2 --------- GND      | SCL --------- GPIO22
++-------------------+      | VCC --------- 3.3V
+                           | GND --------- GND
+                           +-------------------+
 ```
 
 ## 🛠️ Procedimento de Montagem

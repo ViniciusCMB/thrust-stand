@@ -10,6 +10,7 @@
 #include <esp_now.h>
 #include <WiFi.h>
 #include <Preferences.h>
+#include <LiquidCrystal_I2C.h>
 
 #include "Pressure.h"
 

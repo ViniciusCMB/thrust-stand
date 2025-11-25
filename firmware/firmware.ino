@@ -18,16 +18,12 @@
 #define CS_PIN 5      // Pino do cartão SD
 #define BUZZER_PIN 33 // Pino do buzzer
 #define BTN_PIN 32    // Pino do botão
-// #define ENC1_PIN XX       // Pino 1 do encoder
-// #define ENC2_PIN XX       // Pino 2 do encoder
 #define CELULA_DT_PIN 26  // Pino de dados da célula de carga
 #define CELULA_SCK_PIN 27 // Pino de clock da célula de carga
 #define PRESSURE_PIN 35   // Pino do sensor de pressão
 #define INTERVALO 100     // Precisão Leitura Dados milissegundos
-#define LCD_ROW 4
-#define LCD_COL 20
-
-
+#define LCD_ROW 4 // Quantidade de linhas do LCD
+#define LCD_COL 20 // Quantidade de colunas do LCD 
 
 // Variáveis globais
 const float VinPressure = 5.0;    // Tensão que alimenta o sensor
@@ -46,15 +42,6 @@ String dir = "";                  // Diretório
 String filedir = "";              // Arquivo
 String leitura = "";              // Leitura dos dados
 bool espNowPeerReady = false;     // Estado do par ESP-NOW
-
-
-// definindo lcd
-LiquidCrystal_I2C LCD = LiquidCrystal_I2C(0x27, 16, 4);
-
-// Simbolos Customizados
-byte bitmapCelsius[8] = {0b11000,0b11000,0b00000,0b00110,0b01001,0b01000,0b01001,0b00110};
-byte bitmapSeta1[8] = {0b00000,0b00000,0b00000,0b01111,0b01111,0b00000,0b00000,0b00000};
-byte bitmapSeta2[8] = {0b10000,0b11000,0b11100,0b11110,0b11110,0b11100,0b11000,0b10000};
 
 // Configuração esp-now
 uint8_t enderecoReceptor[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}; // Endereço MAC do receptor
@@ -76,6 +63,7 @@ RTC_DS3231 rtc;                                                                 
 HX711 escala;                                                                                                                // Célula de carga
 BluetoothSerial SerialBT;                                                                                                    // Bluetooth
 Preferences preferences;                                                                                                     // Preferências salvas
+LiquidCrystal_I2C LCD = LiquidCrystal_I2C(0x27, 20, 4); // Tela LCD 20x4
 
 void setup()
 {
@@ -90,19 +78,7 @@ void setup()
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(BTN_PIN, INPUT);
   
-  // inicializar LCD
-  LCD.init();
-  LCD.backlight();
-  LCD.setCursor(0, 0);
-  LCD.clear(): 
-
-  LCD.createChar(0, bitmapCelsius);
-  LCD.createChar(1, bitmapSeta1);
-  LCD.createChar(2, bitmapSeta2);
-
-
-  // setup tela de informacoes
-
+  setupInfoScreen();
 
   // setupESPNow();
 
@@ -173,17 +149,20 @@ void loop()
   }
 }
 
-// tela de informacoes que vao aparecer no lcd
+// Configuração da tela de informacoes que vão aparecer no lcd
 void setupInfoScreen() {
-  LCD.clear();
+  LCD.init();
+  LCD.backlight();
   LCD.setCursor(0, 0);
-  LCD.print("Atual:");
+  LCD.clear(): 
+  LCD.setCursor(0, 0);
+  LCD.print("kgf: ");
   LCD.setCursor(0, 1); // Linha 1, coluna 0
-  LCD.print("Maior:");
+  LCD.print("Max kgf: ");
   LCD.setCursor(0 , 2);
-  LCD.print("Pressao Atual:");
+  LCD.print("MPa: ");
   LCD.setCursor(0, 3);
-  LCD.print("Pressao Maior: ");
+  LCD.print("Max MPa: ");
 }
 
 // Configuração do fator de carga
@@ -350,11 +329,11 @@ bool setupHX711()
 }
 
 // Função para registrar e imprimir os dados do momento
-// Formato: Tempo (ms), Empuxo (Kg), Pressão (ADC)
+// Formato: Tempo (ms), Empuxo (Kg), Pressão (MPa)
 void logData(unsigned long millis)
 {
   float peso = escala.get_units();
-  float pressao = pressureSensor.readADC();
+  float pressao = pressureSensor.readMPa();
   // printa os valores de peso e pressão no LCD (ajuste posições para 16x4)
   // Atual (linha 0) e Maior (linha 1) para peso
   LCD.setCursor(12, 0);
@@ -455,7 +434,6 @@ void createDir(fs::FS &fs, const String &path)
 // Função para imprimir na Serial e SerialBT
 void printToSerials(const String &message)
 {
-  // Serial monitor
   Serial.println(message);
   SerialBT.println(message);
 }

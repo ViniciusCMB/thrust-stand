@@ -1,6 +1,4 @@
 from PySide6.QtWidgets import (QApplication, QMainWindow)
-# from fator_de_calibracao_cli import get_calibration_factor, list_ports, Receiver
-# from ui_fator_de_calibracao import Ui_MainWindow
 import fator_de_calibracao_cli as fact_cli
 import ui_fator_de_calibracao as fact_ui
 import logging
@@ -18,18 +16,12 @@ class Calibrator:
         self.logger = logging.getLogger('Calibrator')
 
         self.ui.setupUi(self.window)
-        self.extend_ui()
+        extend_ui(self.ui)
 
         self.window.show()
         self.app.exec()
 
-    def extend_ui(self):
-        self.dummy_elements: bool = False
-        ...
-
-    def connect_esp(self):
-        
-        ...
+    # NOTE: a UI é estendida pela função `extend_ui(self.ui)`.
 
 
 def extend_ui(ui):
@@ -50,14 +42,17 @@ def extend_ui(ui):
         samples = []
         sample_count = 0
 
-        while(com.check_connection() and sample_count < n_samples):
+        while (com.check_connection() and sample_count < n_samples):
 
-            # ui.display_status.text()
-            response = int(com.read_response())
-            samples.append(response)
-            sample_count+=1
-            print(f"Sample {sample_count}: {response}")
-            ui.progressBar.value = int(float(sample_count/n_samples)*100)
+            raw = com.read_response()
+            value = fact_cli.try_parse_int(raw)
+            if value is None:
+                continue
+
+            samples.append(value)
+            sample_count += 1
+            print(f"Sample {sample_count}: {value}")
+            ui.progressBar.setValue(int(float(sample_count / n_samples) * 100))
 
         return samples
 
@@ -78,15 +73,15 @@ def extend_ui(ui):
         comma = f'SET LOAD FACTOR {fator}\n'
         # print("->",repr(comma.encode('utf-8')))
         print(f"-> {comma.strip()}")
-        com.serial.write(comma.encode('utf-8'))    
-        # com.serial.flushInput()
-        # com.serial.flushOutput()
-        response = com.read_response()
-        print(response)
-        i = 0
-        while i < 10:
-           print(com.read_response()) 
-           i+=1
+        com.serial.reset_input_buffer()
+        com.serial.write(comma.encode('utf-8'))
+        com.serial.flush()
+
+        # Drena algumas linhas para exibir a confirmação do firmware.
+        for _ in range(10):
+            line = com.read_response()
+            if line:
+                print(line)
 
     def calculate_factor():
         print(f"{com=}")
@@ -100,7 +95,7 @@ def extend_ui(ui):
         if expected_weight == '':
             return -1
 
-        calibration_factor = fact_cli.get_calibration_factor(samples, int(expected_weight))
+        calibration_factor = fact_cli.get_calibration_factor(samples, float(expected_weight))
 
         ui.line_edit_fator.setText(str(calibration_factor))
 

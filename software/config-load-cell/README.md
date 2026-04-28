@@ -1,16 +1,13 @@
 # Explicação do Sistema
 
-Este sistema é composto por quatro componentes principais:
+Este sistema é composto pelos seguintes componentes principais:
 
-1. **Config.ino**: Este código roda em um ESP32 e é responsável por enviar as leituras da célula de carga.
-2. **DadosSerial.py**: Este script lê as leituras da célula de carga enviadas pelo ESP32.
-3. **Calibrar.py**: Este script realiza o cálculo do fator de calibração da célula de carga.
-4. **Verify.ino**: Este código verifica a precisão da célula de carga após a calibração.
+1. **`firmware/firmware.ino`**: roda no ESP32 e transmite leituras (RAW e em unidades) via Serial.
+2. **`software/config-load-cell/fator_de_calibracao/fator_de_calibracao_main.py`**: ferramenta GUI para calcular/enviar o fator de calibração.
+3. **`software/config-load-cell/fator_de_calibracao/fator_de_calibracao_cli.py`**: utilitários/CLI de calibração (opcional).
 
-- **Config.ino**: Configura o ESP32 para coletar dados da célula de carga e enviá-los via comunicação serial.
-- **DadosSerial.py**: Recebe os dados enviados pelo ESP32 e os salva para análise posterior.
-- **Calibrar.py**: Utiliza os dados salvos para calcular o fator de calibração necessário para ajustar a precisão da célula de carga.
-- **Verify.ino**: Verifica a precisão da célula de carga após a calibração, exibindo as leituras no monitor serial.
+- **Firmware**: coleta dados da célula de carga (HX711) e envia via Serial/Bluetooth.
+- **GUI**: lê as amostras RAW do ESP32, calcula o fator e envia via comando `SET LOAD FACTOR`.
 
 ## Passo a Passo para Configurar uma Célula do Zero
 
@@ -21,22 +18,15 @@ Este sistema é composto por quatro componentes principais:
 
 2. **Configuração do ESP32**:
 
-   - Carregue o código `Config.ino` no ESP32 usando a IDE Arduino.
+    - Carregue o código `firmware/firmware.ino` no ESP32 usando a IDE Arduino.
    - Verifique se o ESP32 está enviando dados da célula de carga via comunicação serial.
 
-3. **Leitura dos Dados**:
+3. **Calibração da Célula de Carga**:
 
-   - Adicione um peso conhecido na célula de carga.
-   - Execute o script `DadosSerial.py` para ler os dados enviados pelo ESP32.
-   - Certifique-se de que os dados estão sendo recebidos corretamente.
+    - Coloque um peso conhecido na célula.
+    - Execute a GUI: `python software/config-load-cell/fator_de_calibracao/fator_de_calibracao_main.py`
+    - Selecione a porta serial, clique em "Conectar" e depois em "Calcular".
+    - Confirme/ajuste o valor e clique em "Enviar" para persistir no ESP32.
 
-4. **Calibração da Célula de Carga**:
-
-   - Verifique o arquivo `Dados.txt`.
-   - Execute o script `Calibrar.py` para calcular o fator de calibração.
-   - Informe o peso usado anteriormente.
-
-5. **Verificação Final**:
-   - Carregue o código `Verify.ino` no ESP32 para verificar a precisão da célula de carga.
-   - Teste a célula de carga com pesos conhecidos para garantir a precisão.
-   - Faça ajustes adicionais no fator de calibração, se necessário.
+4. **Verificação Final**:
+    - Reinicie o ESP32 e valide a leitura em `kgf` via Serial (o firmware faz log contínuo).

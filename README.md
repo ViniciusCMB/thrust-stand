@@ -5,7 +5,7 @@
 
 ## 📋 Sobre
 
-Sistema embarcado baseado em ESP32 para controle e monitoramento de testes estáticos de motores de foguetes, com aquisição de dados de empuxo e pressão em tempo real, armazenamento em cartão SD e comunicação multi-protocolo.
+Sistema embarcado baseado em ESP32 para controle e monitoramento de testes estáticos de motores de foguetes, com aquisição de dados de empuxo e pressão em tempo real, armazenamento em cartão SD e comunicação via Serial/Bluetooth.
 
 ## 🚀 Quick Start
 
@@ -33,7 +33,7 @@ git clone https://github.com/ViniciusCMB/thrust-stand.git
 
 - Hardware: ESP32, Célula de carga, Conversor HX711, Sensor de pressão, RTC DS3231, Leitor Micro SD Card.
 - Software: Arduino IDE 2.0+
-- Bibliotecas: Ver requirements.txt
+- Bibliotecas: ver `docs/FIRMWARE.md`
 
 ## 📖 Documentação
 
@@ -46,10 +46,9 @@ git clone https://github.com/ViniciusCMB/thrust-stand.git
 
 - ✅ Aquisição de dados de empuxo e pressão em tempo real
 - ✅ Armazenamento em cartão SD com timestamp
-- ✅ Comunicação multi-protocolo (Serial, Bluetooth, ESP-NOW)
+- ✅ Comunicação (Serial, Bluetooth)
 - ✅ Calibração persistente de sensores
 - ✅ Feedback visual e audível
-- ✅ Tela LCD para exibição de valores atuais e máximos 
 
 ## 🤝 Contribuindo
 

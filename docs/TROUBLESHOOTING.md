@@ -126,20 +126,6 @@ Serial/Bluetooth Não Conecta
 ✅ Resetar pairing Bluetooth
 ```
 
-ESP-NOW Não Funciona
-
-```
-# Diagnóstico:
-1. Verificar endereço MAC do receptor
-2. Verificar se ambos estão no mesmo canal WiFi
-3. Verificar distância (< 100m em campo aberto)
-
-# Soluções:
-✅ Usar endereço MAC correto do receptor
-✅ Verificar antenas WiFi
-✅ Reduzir distância entre dispositivos
-```
-
 ### 5. 🕐 Problemas com RTC (Relógio)
 
 Sintomas

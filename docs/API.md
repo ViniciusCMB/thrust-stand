@@ -6,11 +6,10 @@ Este documento descreve os protocolos de comunicação e interfaces disponíveis
 
 ## 🔌 Protocolos Suportados
 
-| Protocolo  | Tipo     | Velocidade  | Alcance | Caso de Uso              |
-| ---------- | -------- | ----------- | ------- | ------------------------ |
-| Serial USB | Fio      | 115200 baud | Local   | Configuração e debug     |
-| Bluetooth  | Wireless | 115200 baud | 10m     | Controle remoto          |
-| ESP-NOW    | Wireless | 1-2 Mbps    | 100m    | Telemetria em tempo real |
+| Protocolo  | Tipo     | Velocidade  | Alcance | Caso de Uso          |
+| ---------- | -------- | ----------- | ------- | -------------------- |
+| Serial USB | Fio      | 115200 baud | Local   | Configuração e debug |
+| Bluetooth  | Wireless | 115200 baud | 10m     | Controle remoto      |
 
 ## 💻 Comunicação Serial/Bluetooth
 
@@ -80,42 +79,3 @@ Fator de carga atualizado: 277306.00
 Modo configuração finalizado
 ```
 
-## 📡 Protocolo ESP-NOW
-
-### Configuração
-
-```cpp
-// Endereço MAC do receptor (broadcast)
-uint8_t enderecoReceptor[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-
-// Estrutura da mensagem
-typedef struct struct_message {
-    char data[60]; // "timestamp,empuxo,pressao"
-} struct_message;
-```
-
-### Formato da Mensagem
-
-```cpp
-<timestamp>,<empuxo>,<pressao>
-```
-
-Exemplo
-
-```
-123456,1.234567,1850
-```
-
-### Callback de Confirmação
-
-```cpp
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-    Serial.print("Status ESP-NOW: ");
-    Serial.println(status == ESP_NOW_SEND_SUCCESS ?
-                   "Entregue" : "Falha");
-}
-```
-
-### Arduino - Receptor ESP-NOW
-
-Acessar o código utilizado no [receptor](../extras/receiver-esp-now/receiver-esp-now.ino)

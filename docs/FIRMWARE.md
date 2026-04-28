@@ -4,7 +4,7 @@
 
 ### Visão Geral
 
-O firmware implementa um sistema de aquisição de dados em tempo real para testes estáticos de foguetes, com capacidade de processamento, armazenamento e comunicação multi-protocolo.
+O firmware implementa um sistema de aquisição de dados em tempo real para testes estáticos de foguetes, com capacidade de processamento, armazenamento e comunicação via Serial/Bluetooth.
 
 ### Diagrama de Arquitetura
 
@@ -14,8 +14,8 @@ O firmware implementa um sistema de aquisição de dados em tempo real para test
 │                 │    │                  │    │                  │
 │  Célula Carga   │───▶│   Aquisição      │───▶│  Cartão SD       │
 │  Sensor Pressão │    │   Filtragem      │    │  Serial/BT       │
-│  RTC DS3231     │    │   Timestamp      │    │  ESP-NOW         │
-│                 │    │                  │    │  LCD             │
+│  RTC DS3231     │    │   Timestamp      │    │  Serial/BT       │
+│                 │    │                  │    │                 │
 └─────────────────┘    └──────────────────┘    └──────────────────┘
          │                        │                        │
          └────────────────────────┼────────────────────────┘
@@ -47,12 +47,11 @@ firmware/
 - FS
 - SD
 - SPI
-- PushButton
+- Pushbutton
 - BluetoothSerial
-- esp_now
-- WiFi
 - Preferences
-- LiquidCrystal_I2C
+
+Obs.: as bibliotecas acima precisam estar instaladas no ambiente Arduino/PlatformIO (ex.: RTClib, HX711, Pushbutton).
 
 ## 🔧 Configuração e Calibração
 
@@ -91,8 +90,8 @@ void setup() {
     setupSDCard();
     setupHX711();
 
-    // 4. Comunicação wireless
-    setupESPNow();
+    // 4. Sensor de pressão
+    pressureSensor.begin();
 }
 ```
 
@@ -132,7 +131,7 @@ struct SensorData {
 ```cpp
 void logData(unsigned long millis) {
     float peso = escala.get_units();
-    float pressao = pressureSensor.readMPA();
+    float pressao = pressureSensor.readMPa();
 
     // Detecção de valores máximos
     if (peso > maxValues[0]) maxValues[0] = peso;
@@ -142,10 +141,7 @@ void logData(unsigned long millis) {
     leitura = String(millis) + "," + String(peso, 6) + "," + String(pressao);
     appendFile(SD, filedir, leitura);
 
-    // Transmissão (não implementado)
-    if (espNowPeerReady) {
-        transmitDataESPNow(leitura);
-    } 
+    // Transmissão é feita via Serial/Bluetooth no printToSerials()
 }
 ```
 
@@ -217,26 +213,6 @@ void appendFile(fs::FS &fs, const String &path, const String &message) {
 ```
 
 ## 📡 Comunicação
-
-### Protocolo ESP-NOW (não implementado)
-
-```cpp
-typedef struct struct_message {
-    char data[60]; // "timestamp,empuxo,pressao"
-} struct_message;
-
-void setupESPNow() {
-    WiFi.mode(WIFI_STA);
-    if (esp_now_init() == ESP_OK) {
-        esp_now_register_send_cb(OnDataSent);
-        // Configurar peer
-    }
-}
-
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-    // Callback de confirmação de entrega
-}
-```
 
 ### Bluetooth Serial
 

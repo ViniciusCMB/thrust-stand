@@ -21,6 +21,9 @@
 #define PRESSURE_PIN 35   // Pino do sensor de pressão
 #define INTERVALO 100     // Precisão Leitura Dados milissegundos
 
+// Sensores analógicos no ESP32 podem variar com atenuação/referência.
+// Ajuste estes parâmetros ao seu hardware real para obter leituras coerentes.
+
 // Variáveis globais
 const float VinPressure = 5.0;    // Tensão que alimenta o sensor
 const float VminPressure = 0.27;  // Tensão de saída em 0 MPa
@@ -37,6 +40,9 @@ float loadFactor = 0.0;           // Valor encontrado na calibração
 String dir = "";                  // Diretório
 String filedir = "";              // Arquivo
 String leitura = "";              // Leitura dos dados
+
+// Estado do modo de configuração (calibração)
+static bool configMode = false;
 
 // Instanciação de objetos
 Pushbutton button(BTN_PIN);                                                                                                  // Botão
@@ -77,7 +83,11 @@ void setup()
 
 void loop()
 {
-  staticTest();
+  if (!configMode)
+  {
+    staticTest();
+  }
+
   if (button.getSingleDebouncedPress())
   {
     buzzSignal("Beep");
@@ -89,42 +99,51 @@ void loop()
   {
     String command = Serial.readStringUntil('\n');
     command.trim(); // Remove espaços e quebras de linha
+
+    if (command.equalsIgnoreCase("TARE"))
+    {
+      buzzSignal("Beep");
+      printToSerials("Célula Zerada!");
+      escala.tare();
+      return;
+    }
+
     if (command.startsWith("INIT CONFIG"))
     {
       escala.tare();
-      bool configurado = false;
-
-      while (!configurado)
-      {
-        if (Serial.available())
-        {
-          String loadCommand = Serial.readStringUntil('\n');
-          loadCommand.trim();
-
-          if (loadCommand.startsWith("SET LOAD FACTOR"))
-          {
-            int lastSpaceIndex = loadCommand.lastIndexOf(' ');
-            if (lastSpaceIndex != -1)
-            {
-              String factorStr = loadCommand.substring(lastSpaceIndex + 1);
-              float factor = factorStr.toFloat();
-              if (!isnan(factor))
-              {
-                setLoadFactor(factor);
-                configurado = true; // Sai do loop
-              }
-              else
-              {
-                printToSerials("Valor inválido. Tente novamente.");
-                buzzSignal("Alerta");
-              }
-            }
-          }
-        }
-        Serial.println(escala.get_value(1));
-        delay(100);
-      }
+      configMode = true;
+      Serial.println("Aguardando fator de carga...");
+      return;
     }
+
+    if (configMode && command.startsWith("SET LOAD FACTOR"))
+    {
+      int lastSpaceIndex = command.lastIndexOf(' ');
+      if (lastSpaceIndex != -1)
+      {
+        String factorStr = command.substring(lastSpaceIndex + 1);
+        float factor = factorStr.toFloat();
+        if (!isnan(factor) && factor != 0.0)
+        {
+          setLoadFactor(factor);
+          configMode = false;
+          Serial.println("Modo configuração finalizado");
+        }
+        else
+        {
+          printToSerials("Valor inválido. Tente novamente.");
+          buzzSignal("Alerta");
+        }
+      }
+      return;
+    }
+  }
+
+  // Stream de calibração: RAW contínuo enquanto aguarda o fator
+  if (configMode)
+  {
+    Serial.println(escala.get_value(1));
+    delay(100);
   }
 }
 
@@ -227,7 +246,7 @@ bool setupSDCard()
   dir = "/" + now;
   createDir(SD, dir);
   filedir = dir + "/" + now + "_raw.txt";
-  if (writeFile(SD, filedir, "Tempo,Empuxo,Pressao")) // Criação do arquivo para armazenamento de dados
+  if (writeFile(SD, filedir, "Tempo,Empuxo,Pressao\n")) // Criação do arquivo para armazenamento de dados
   {
     printToSerials("Arquivo criado com sucesso");
     return true;

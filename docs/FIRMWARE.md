@@ -149,20 +149,7 @@ void logData(unsigned long millis) {
 
 ### Interface Serial/Bluetooth
 
-```cpp
-void handleSerialCommand() {
-    String command = Serial.readStringUntil('\n');
-    command.trim();
-
-    if (command.startsWith("INIT CONFIG")) {
-        enterConfigurationMode();
-    }
-    else if (command.startsWith("SET LOAD FACTOR")) {
-        processLoadFactorCommand(command);
-    }
-    // ... outros comandos
-}
-```
+Os comandos são lidos da Serial USB (Bluetooth apenas espelha logs via `printToSerials`).
 
 ### Comandos Disponíveis
 
@@ -170,6 +157,7 @@ void handleSerialCommand() {
 | --------------- | ------------------------ | -------------------------- | ------------------- |
 | INIT CONFIG     | Entra em modo calibração | `INIT CONFIG`              | Aguarda fator       |
 | SET LOAD FACTOR | Define fator de carga    | `SET LOAD FACTOR 277306.0` | Confirmação         |
+| TARE            | Zera célula de carga     | `TARE`                     | Confirmação         |
 | Botão Físico    | Zera célula de carga     | -                          | Beep de confirmação |
 
 ## 💾 Sistema de Arquivos

@@ -30,3 +30,5 @@ Este sistema é composto pelos seguintes componentes principais:
 
 4. **Verificação Final**:
     - Reinicie o ESP32 e valide a leitura em `kgf` via Serial (o firmware faz log contínuo).
+
+Obs.: os arquivos `Config.ino`, `Verify.ino`, `DadosSerial.py`, `Calibrar.py` são legados e não fazem parte do fluxo atual.

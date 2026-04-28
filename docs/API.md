@@ -52,7 +52,7 @@ USO: Define o fator de calibração da célula de carga
 ```
 # Zerar célula de carga (equivalente ao botão físico)
 COMANDO: TARE
-RESPOSTA: Célula zerada!
+RESPOSTA: Célula Zerada!
 USO: Realiza o tara da célula de carga
 ```
 
@@ -78,4 +78,3 @@ SET LOAD FACTOR 277306.0
 Fator de carga atualizado: 277306.00
 Modo configuração finalizado
 ```
-

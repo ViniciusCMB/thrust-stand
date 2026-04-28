@@ -28,7 +28,7 @@ def extend_ui(ui):
 
     dummy_elements = False
     global com
-    # com = None
+    com = None
 
     def update_port_list():
         ports = fact_cli.list_ports()
@@ -68,6 +68,9 @@ def extend_ui(ui):
 
     def send_factor():
         print(f"{com=}")
+        if com is None:
+            ui.display_status.setText('Desconectado')
+            return
         fator = ui.line_edit_fator.text().strip()
         fator = fator.replace(',', '.')
         comma = f'SET LOAD FACTOR {fator}\n'
@@ -86,7 +89,7 @@ def extend_ui(ui):
     def calculate_factor():
         print(f"{com=}")
 
-        if com == None:
+        if com is None:
             return -1
 
         samples = get_samples_with_progress(com)

@@ -5,6 +5,23 @@ import serial
 import serial.tools.list_ports
 # from datetime import datetime
 
+
+def try_parse_int(line: str) -> int | None:
+    """Best-effort parsing for the ESP32 calibration stream.
+
+    During calibration the firmware should stream raw integers, but it can also
+    print status lines. This helper ignores non-integer lines.
+    """
+    if line is None:
+        return None
+    s = line.strip()
+    if not s:
+        return None
+    try:
+        return int(s)
+    except ValueError:
+        return None
+
 class Receiver():
     def __init__(
             self,
@@ -57,10 +74,14 @@ def get_samples(com: Receiver, n_samples: int = 10) -> list[int]:
 
         start_time_ns = time.time_ns()
 
-        response = int(com.read_response())
-        samples.append(response)
-        sample_count+=1
-        print(f"Sample {sample_count}: {response}")
+        raw = com.read_response()
+        value = try_parse_int(raw)
+        if value is None:
+            continue
+
+        samples.append(value)
+        sample_count += 1
+        print(f"Sample {sample_count}: {value}")
 
         end_time_ns = time.time_ns()
 
@@ -70,17 +91,17 @@ def get_samples(com: Receiver, n_samples: int = 10) -> list[int]:
         await_time_ms = (time_between_samples_ms - elapsed_time_ms)
         if await_time_ms < 0: await_time_ms = 0
 
-        time.sleep(await_time_ms)
+        time.sleep(await_time_ms / 1000)
 
     return samples
 
-def get_calibration_factor(samples: list[int], expected_weight: int):
+def get_calibration_factor(samples: list[int], expected_weight: float):
 
     samples_sum = sum(samples)
     samples_amnt = len(samples)
     samples_avg = samples_sum/samples_amnt
 
-    calibration_factor = samples_avg/expected_weight
+    calibration_factor = samples_avg / expected_weight
 
     return calibration_factor
 
@@ -128,9 +149,9 @@ def main(argv: list[str]) -> int:
     n_samples = int(input("Digite nº de amostras para calibrar a pesage:\n-> "))
     expected_weight = int(input("Digite o peso esperado:\n-> "))
 
-    samples = get_samples(com)
+    samples = get_samples(com, n_samples=n_samples)
 
-    calibration_factor = get_calibration_factor(samples, expected_weight)
+    calibration_factor = get_calibration_factor(samples, float(expected_weight))
 
     print(f"Fator de Calibração: {calibration_factor}")
 

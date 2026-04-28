@@ -32,3 +32,9 @@
 *.app
 
 code/data/credentials.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

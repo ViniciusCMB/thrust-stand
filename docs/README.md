@@ -27,7 +27,6 @@ Esta documentação está organizada para fornecer todas as informações necess
 
 - Comandos via Serial/Bluetooth
 - Estrutura de dados e mensagens
-- Protocolo ESP-NOW
 - Formato dos arquivos de log
 
 ### 5. Procedimentos de Calibração
@@ -52,7 +51,7 @@ Arquitetura do Sistema
 [Sensores] → [ESP32] → [Armazenamento] → [Comunicação]
     ↓           ↓           ↓               ↓
 Célula Carga  Process.   Cartão SD      Serial/BT
-Sensor Press.  Dados     Estrutura      ESP-NOW
+Sensor Press.  Dados     Estrutura      Monitoramento
     RTC        Filtro    Timestamp      Monitoramento
 ```
 
@@ -67,7 +66,7 @@ graph TD;
     D --> F[Arquivo CSV];
     E --> G[Serial];
     E --> H[Bluetooth];
-    E --> I[ESP-NOW];
+    
 
 ```
 
@@ -78,7 +77,7 @@ graph TD;
 - Microcontrolador: ESP32
 - Sensores: Célula de carga + HX711, Sensor de pressão, RTC DS3231
 - Armazenamento: Cartão SD (FAT32) + Módulo leitor
-- Comunicação: Serial, Bluetooth, ESP-NOW
+- Comunicação: Serial, Bluetooth
 - Alimentação: 5V DC
 - Consumo: ~150mA em operação
 
